@@ -1,0 +1,49 @@
+<html>
+<head>
+
+</head>
+<body>
+    <img src="surfer.png" style="position: absolute;"/>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <script>
+        var socket = io();
+
+        var maxVelocityX = 5;
+        var maxVelocityY = 5;
+        var minVelocityX = -5;
+        var minVelocityY = -5;
+
+        var velocityX = 0;
+        var velocityY = 0;
+
+        var xPos = 0;
+        var yPos = 0;
+
+        var minX = 0;
+        var minY = 0;
+
+        var maxX = window.innerWidth - 300;
+        var maxY = window.innerHeight - 300;
+        socket.on('accelerometer', function(msg){
+            velocityX -= ( msg[1] * 1.2 );
+            velocityY -= ( msg[0] * 1.2 );
+            if ( velocityX > maxVelocityX ) { velocityX = maxVelocityX; }
+            if ( velocityY > maxVelocityY ) { velocityY = maxVelocityY; }
+            if ( velocityX < minVelocityX ) { velocityX = minVelocityX; }
+            if ( velocityY < minVelocityY ) { velocityY = minVelocityY; }
+
+            xPos += velocityX;
+            yPos += velocityY;
+
+            if ( xPos < minX ) { xPos = minX; }
+            if ( yPos < minY ) { yPos = minY; }
+            if ( xPos > maxX ) { xPos = maxX; }
+            if ( yPos > maxY ) { yPos = maxY; }
+
+            $('img').css( { left: xPos, top: yPos });
+//            $('img').css( { transform:  'rotateX(' + (180 * msg[0] ) + 'deg) rotateY(' + (180 * msg[1] ) + 'deg) rotateZ(' + (180 * (msg[2] - 1) ) + 'deg)' } );
+        });
+    </script>
+</body>
+</html>
